@@ -1,0 +1,61 @@
+CREATE VIEW `publiclisting` AS SELECT nkvpropertylisting.PropertyListingID AS PropertyListingID,
+       nkvpropertytype.TypeName AS TypeName,
+       nkvpropertytype.TypeIcon AS TypeIcon,
+       nkvpropertytype.TypeIsActive AS TypeIsActive,
+       nkvcountry.CountryName AS CountryName,
+       nkvcity.CityName AS CityName,
+       nkvstatus.StatusName AS StatusName,
+       nkvstates.StateName AS StateName,
+       nkvdiscounttable.DiscountPercentage AS DiscountPercentage,
+       nkvdiscounttable.DiscountIsActive AS DiscountIsActive,
+       nkvpropertylisting.PropertyCode AS PropertyCode,
+       nkvpropertylisting.PropertyCompanyID AS PropertyCompanyID,
+       nkvpropertylisting.View AS View,
+       nkvpropertylisting.PropertyTitle AS PropertyTitle,
+       nkvpropertylisting.SubmitedByUserID AS SubmitedByUserID,
+       nkvpropertylisting.PropertyStatusID AS PropertyStatusID,
+       nkvpropertylisting.PropertyTypeID AS PropertyTypeID,
+       nkvpropertylisting.Pincode AS Pincode,
+       nkvpropertylisting.PropertyCityID AS PropertyCityID,
+       nkvpropertylisting.PropertyStateID AS PropertyStateID,
+       nkvpropertylisting.PropertyCountryID AS PropertyCountryID,
+       nkvpropertylisting.PropertyDescription AS PropertyDescription,
+       nkvpropertylisting.Rating AS Rating,
+       nkvpropertylisting.TotalArea AS TotalArea,
+       nkvpropertylisting.CeilingHeight AS CeilingHeight,
+       nkvpropertylisting.LocationName AS LocationName,
+       nkvpropertylisting.Latitude AS Latitude,
+       nkvpropertylisting.Longitude AS Longitude,
+       nkvpropertylisting.ListingIsActive AS ListingIsActive,
+       nkvpropertylisting.FirstImage AS FirstImage,
+       nkvpropertylisting.OpenFrom AS OpenFrom,
+       nkvpropertylisting.OpenTill AS OpenTill,
+       nkvpropertylisting.NoneWorkingDays AS NoneWorkingDays,
+       nkvpropertylisting.IsOnlineBooking AS IsOnlineBooking,
+       nkvpropertylisting.ListingCreatedOn AS ListingCreatedOn,
+       nkvpropertylisting.ListingUpdatedOn AS ListingUpdatedOn,
+       nkvpropertylisting.NumberOfSeats AS NumberOfSeats,
+       pricetableview.BookingPrice,
+       pricetableview.BookingTypeName,
+       pricetableview.BookingTypeIsActive,
+       pricetableview.BookingTypeID,
+       pricetableview.PriceID
+  FROM ((((((nkvpropertylisting nkvpropertylisting
+             CROSS JOIN nkvstates nkvstates
+                ON (nkvpropertylisting.PropertyStateID = nkvstates.StateID))
+            CROSS JOIN nkvstatus nkvstatus
+               ON (nkvpropertylisting.PropertyStatusID = nkvstatus.StatusID))
+           LEFT OUTER JOIN nkvdiscounttable nkvdiscounttable
+              ON (nkvpropertylisting.PropertyListingID =
+                     nkvdiscounttable.PropertyListingID))
+          LEFT OUTER JOIN nkvpropertytype nkvpropertytype
+             ON (nkvpropertylisting.PropertyTypeID = nkvpropertytype.TypeID))
+         LEFT OUTER JOIN nkvcountry nkvcountry
+            ON (nkvpropertylisting.PropertyCountryID = nkvcountry.CountryID))
+        LEFT OUTER JOIN nkvcity nkvcity
+           ON (nkvpropertylisting.PropertyCityID = nkvcity.CityID))
+       INNER JOIN pricetableview pricetableview
+          ON (nkvpropertylisting.PropertyListingID =
+                 pricetableview.PropertyListingID)
+                 where (pricetableview.BookingPrice = (select min(pricetableview.BookingPrice) from pricetableview
+pricetableview where (pricetableview.PropertyListingID = pricetableview.PropertyListingID)));
