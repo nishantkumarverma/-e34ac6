@@ -47,7 +47,9 @@ $app->get('/colors/get(/)(/:pageno(/:pagelimit))', function ($pageno=0,$pagelimi
 		$StartFrom = ($pageno-1) * $pagelimit; 
 		$Query.=" LIMIT ". $pagelimit ." OFFSET ". $StartFrom."";
 		  }
+			$db = getDB();
  
+        $sth = $db->prepare($Query);
         $sth->execute();
  
         $Color = $sth->fetchAll(PDO::FETCH_OBJ);
@@ -86,19 +88,20 @@ $app->post('/colors/add/', function() use($app) {
       
 		$sth = $db->prepare("SELECT * 
             FROM productcolors
-            WHERE ColorName = :ColorName");
+            WHERE ColorName = :ColorName or ColorCode=:ColorCode");
  
         $sth->bindParam(':ColorName', $ColorName);
+		$sth->bindParam(':ColorCode', $ColorCode);
 		 $sth->execute();
        $color = $sth->fetchAll(PDO::FETCH_OBJ);
 		 if($color) {
 		  $app->response->setStatus(200);
 			$app->response()->headers->set('Content-Type', 'application/json');
-            echo json_encode(array("status" => "success", "code" => 1,"message"=> "Color name already exists"));
+            echo json_encode(array("status" => "success", "code" => 1,"message"=> "Color name/code already exists"));
 		 }
 		 else{
 		$sth = $db->prepare("INSERT INTO productcolors(ColorName,ColorCode)
-            VALUES (:ColorName,:Currency)");
+            VALUES (:ColorName,:ColorCode)");
         $sth->bindParam(':ColorName', $ColorName);
         $sth->bindParam(':ColorCode', $ColorCode);
         $sth->execute();

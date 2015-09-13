@@ -40,7 +40,7 @@ $app->get('/productsize/get(/)(/:pageno(/:pagelimit))', function ($pageno=0,$pag
  
     $app = \Slim\Slim::getInstance();
     try 
-    {
+    { $db = getDB();
 		$Query="SELECT * FROM productsizes order by SizeName ASC";
 		
 		if($pageno!=0){
@@ -48,8 +48,10 @@ $app->get('/productsize/get(/)(/:pageno(/:pagelimit))', function ($pageno=0,$pag
 		$Query.=" LIMIT ". $pagelimit ." OFFSET ". $StartFrom."";
 		  }
  
-        $sth->execute();
+         $sth = $db->prepare($Query);
  
+
+        $sth->execute();
         $Size = $sth->fetchAll(PDO::FETCH_OBJ);
  
          if($Size) { 
@@ -59,7 +61,7 @@ $app->get('/productsize/get(/)(/:pageno(/:pagelimit))', function ($pageno=0,$pag
         } else {
 			$app->response->setStatus(200);
 			$app->response()->headers->set('Content-Type', 'application/json');
-            echo json_encode(array("status" => "success", "code" => 1,"message"=> "No record found"));
+            echo json_encode(array("status" => "success", "code" => 0,"message"=> "No record found"));
         }
 		
     } catch(PDOException $e) {

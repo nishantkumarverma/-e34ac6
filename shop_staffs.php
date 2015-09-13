@@ -5,7 +5,7 @@ $app->get('/shopstaffs/getbyid/:id', function ($id) {
 		$app = \Slim\Slim::getInstance();
 		$db = getDB();
         $sth = $db->prepare("SELECT * 
-            FROM shop_staffs
+            FROM staff_view
             WHERE ShopStaffID = :id");
  
         $sth->bindParam(':id', $id);
@@ -38,7 +38,7 @@ $app->get('/shopstaffs/get(/)(/:pageno(/:pagelimit))', function ($pageno=0,$page
     try 
     {	$app = \Slim\Slim::getInstance();
 		$db = getDB();
-		$Query="SELECT * FROM shop_staffs";
+		$Query="SELECT * FROM staff_view";
 		
 		if($pageno!=0){
 		$StartFrom = ($pageno-1) * $pagelimit; 
@@ -78,7 +78,7 @@ $app->post('/shopstaffs/validate/', function() use($app) {
         $db = getDB();
  
         $sth = $db->prepare("SELECT * 
-            FROM shop_staffs
+            FROM staff_view
             WHERE StaffMobile = :StaffMobile And StaffPassword = :StaffPassword");
  
         $sth->bindParam(':StaffMobile', $StaffMobile);

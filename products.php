@@ -100,7 +100,7 @@ $app->post('/products/add/', function() use($app) {
 		$ProductCreatedBy=$allPostVars['ProductCreatedBy'];
 		$ProductUpdatedBy=$allPostVars['ProductUpdatedBy'];
 		$ProductIsActive=$allPostVars['ProductIsActive'];
-
+		$ProductBardCode=$allPostVars['ProductBardCode'];
 
 		$sth = $db->prepare("SELECT * 
             FROM products
@@ -116,7 +116,7 @@ $app->post('/products/add/', function() use($app) {
             echo json_encode(array("status" => "success", "code" => 1,"message"=> "Product title already exists"));
 		 }
 		 else{
-		$sth = $db->prepare("INSERT INTO products(CompanyID ,ShopID ,ProductTitle ,ProductDescription ,Images ,Videos ,Tags ,SellingPrice ,CostPrice ,CategoryID ,BrandID ,SizeID ,ManufacturersID ,ColorID ,StatusID ,Quantity ,ProductCreatedOn ,ProductCreatedBy ,ProductUpdatedOn ,ProductUpdatedBy ,ProductIsActive ) VALUES ( :CompanyID ,:ShopID ,:ProductTitle ,:ProductDescription ,:Images ,:Videos ,:Tags ,:SellingPrice ,:CostPrice ,:CategoryID ,:BrandID ,:SizeID ,:ManufacturersID ,:ColorID ,:StatusID ,:Quantity ,:ProductCreatedOn ,:ProductCreatedBy ,:ProductUpdatedOn ,:ProductUpdatedBy ,:ProductIsActive )");
+		$sth = $db->prepare("INSERT INTO products(CompanyID ,ShopID ,ProductTitle ,ProductDescription ,Images ,Videos ,Tags ,SellingPrice ,CostPrice ,CategoryID ,BrandID ,SizeID ,ManufacturersID ,ColorID ,StatusID ,Quantity ,ProductCreatedOn ,ProductCreatedBy ,ProductUpdatedOn ,ProductUpdatedBy ,ProductIsActive,ProductBardCode ) VALUES ( :CompanyID ,:ShopID ,:ProductTitle ,:ProductDescription ,:Images ,:Videos ,:Tags ,:SellingPrice ,:CostPrice ,:CategoryID ,:BrandID ,:SizeID ,:ManufacturersID ,:ColorID ,:StatusID ,:Quantity ,:ProductCreatedOn ,:ProductCreatedBy ,:ProductUpdatedOn ,:ProductUpdatedBy ,:ProductIsActive,:ProductBardCode)");
 			
 
        //$sth->bindParam(':ProductID', $ProductID);
@@ -141,6 +141,7 @@ $app->post('/products/add/', function() use($app) {
 		//$sth->bindParam(':ProductUpdatedOn', $ProductUpdatedOn);								
 		$sth->bindParam(':ProductUpdatedBy', $ProductUpdatedBy);								
 		$sth->bindParam(':ProductIsActive', $ProductIsActive);
+		$sth->bindParam(':ProductBardCode', $ProductBardCode);
         $sth->execute();
 		$lastInsertId = $db->lastInsertId();
 		$app->response->setStatus(200);
@@ -181,13 +182,13 @@ $app->post('/products/update/', function() use($app) {
 		//$ProductCreatedBy=$allPostVars['ProductCreatedBy'];
 		$ProductUpdatedBy=$allPostVars['ProductUpdatedBy'];
 		$ProductIsActive=$allPostVars['ProductIsActive'];
- 
+		$ProductBardCode=$allPostVars['ProductBardCode'];
     try 
     {
         $db = getDB();
  
         $sth = $db->prepare("UPDATE products 
-            SET CompanyID= :CompanyID, ShopID= :ShopID, ProductTitle= :ProductTitle, ProductDescription= :ProductDescription, Images= :Images, Videos= :Videos, Tags= :Tags, SellingPrice= :SellingPrice, CostPrice= :CostPrice, CategoryID= :CategoryID, BrandID= :BrandID, SizeID= :SizeID, ManufacturersID= :ManufacturersID, ColorID= :ColorID, StatusID= :StatusID, Quantity= :Quantity,   ProductUpdatedBy= :ProductUpdatedBy, ProductIsActive= :ProductIsActive
+            SET CompanyID= :CompanyID, ShopID= :ShopID, ProductTitle= :ProductTitle, ProductDescription= :ProductDescription, Images= :Images, Videos= :Videos, Tags= :Tags, SellingPrice= :SellingPrice, CostPrice= :CostPrice, CategoryID= :CategoryID, BrandID= :BrandID, SizeID= :SizeID, ManufacturersID= :ManufacturersID, ColorID= :ColorID, StatusID= :StatusID, Quantity= :Quantity,   ProductUpdatedBy= :ProductUpdatedBy, ProductIsActive= :ProductIsActive,ProductBardCode=:ProductBardCode
             WHERE ProductID = :ProductID");
  
        $sth->bindParam(':CompanyID	', $CompanyID);							
@@ -212,6 +213,7 @@ $app->post('/products/update/', function() use($app) {
 		$sth->bindParam(':ProductUpdatedBy', $ProductUpdatedBy);								
 		$sth->bindParam(':ProductIsActive', $ProductIsActive);
         $sth->bindParam(':ProductID', $ProductID);
+		$sth->bindParam(':ProductBardCode', $ProductBardCode);
         $sth->execute();
  
       $app->response->setStatus(200);
