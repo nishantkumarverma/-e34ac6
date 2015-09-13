@@ -136,7 +136,7 @@ include_once("country.php");
 include_once("productbrand.php");
 include_once("productcategory.php");
 include_once("colors.php");
-include_once("manufacture.php");
+include_once("manufacturer.php");
 include_once("productpaymentmethod.php");
 include_once("productsize.php");
 include_once("productstatus.php");
@@ -157,6 +157,11 @@ function echoRespnse($status_code, $response) {
     //echo $response;
 }
 
+
 $app->run();
 
+function mt_rand_str ($l, $c = 'abcdefghijklmnopqrstuvwxyz1234567890') {
+    for ($s = '', $cl = strlen($c)-1, $i = 0; $i < $l; $s .= $c[mt_rand(0, $cl)], ++$i);
+    return $s;
+}
 ?>
