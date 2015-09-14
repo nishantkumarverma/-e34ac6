@@ -60,7 +60,7 @@ $app->get('/manufacturer/get(/)(/:pageno(/:pagelimit))', function ($pageno=0,$pa
         } else {
 			$app->response->setStatus(200);
 			$app->response()->headers->set('Content-Type', 'application/json');
-            echo json_encode(array("status" => "success", "code" => 1,"message"=> "No record found"));
+            echo json_encode(array("status" => "success", "code" => 0,"message"=> "No record found"));
         }
 		
     } catch(PDOException $e) {
@@ -95,17 +95,7 @@ $app->post('/manufacturer/add/', function() use($app) {
 			mkdir($output_dir, 0777, true);       
 			}
 	$imgs = array();
-		if(isset($_FILES['ManufacturerLogo'])){
-			$files = $_FILES['ManufacturerLogo'];
-		$ImageName= str_replace(' ','-',strtolower($files['name']));        
-            $ImageExt= substr($ImageName, strrpos($ImageName, '.'));
-            $ImageExt= str_replace('.','',$ImageExt);
-			$name = 'img'.mt_rand_str(3, 'TUVWXYZ256ABCDEFGH34IJKLMN789OPQR01S').date('Ymd').''.'.'.$ImageExt ;
-			$ManufacturerLogo=$name;
-            if (move_uploaded_file($files['tmp_name'], $output_dir . $name) === true) {
-                $imgs[] = array("status" => "success", "code" => 1, 'url' => $output_dir . $name);
-            }
-		}
+	
 		$sth = $db->prepare("SELECT * 
             FROM productmanufacturer
             WHERE ManufacturerName = :ManufacturerName And ManufacturerCompanyID=:ManufacturerCompanyID");
@@ -117,9 +107,20 @@ $app->post('/manufacturer/add/', function() use($app) {
 		 if($color) {
 		  $app->response->setStatus(200);
 			$app->response()->headers->set('Content-Type', 'application/json');
-            echo json_encode(array("status" => "success", "code" => 1,"message"=> "Manufacturer name already exists","image"=>$imgs));
+            echo json_encode(array("status" => "success", "code" => 0,"message"=> "Manufacturer name already exists","image"=>$imgs));
 		 }
 		 else{
+		 	if(isset($_FILES['ManufacturerLogo'])){
+			$files = $_FILES['ManufacturerLogo'];
+		$ImageName= str_replace(' ','-',strtolower($files['name']));        
+            $ImageExt= substr($ImageName, strrpos($ImageName, '.'));
+            $ImageExt= str_replace('.','',$ImageExt);
+			$name = 'img'.mt_rand_str(3, 'TUVWXYZ256ABCDEFGH34IJKLMN789OPQR01S').date('Ymd').''.'.'.$ImageExt ;
+			$ManufacturerLogo=$name;
+            if (move_uploaded_file($files['tmp_name'], $output_dir . $name) === true) {
+                $imgs[] = array("status" => "success", "code" => 1, 'url' => $output_dir . $name);
+            }
+		}
 		$sth = $db->prepare("INSERT INTO productmanufacturer(ManufacturerName ,ManufacturerDescription ,ManufacturerLogo ,ManufacturerIsActive ,ManufacturerEmail ,ManufacturerPassword ,ManufacturerMobile ,ManufacturerCompanyID )            VALUES(:ManufacturerName,:ManufacturerDescription,:ManufacturerLogo,:ManufacturerIsActive,:ManufacturerEmail,:ManufacturerPassword,:ManufacturerMobile,:ManufacturerCompanyID)");
 			
 
@@ -150,9 +151,13 @@ $app->post('/manufacturer/add/', function() use($app) {
 });
 $app->post('/manufacturer/update/', function() use($app) {
  
-    $allPostVars = $app->request->post();
-    $ManufacturerID=$allPostVars['ManufacturerID'];
-	$ManufacturerName=$allPostVars['ManufacturerName'];
+    
+    try 
+    {
+        $db = getDB();
+		$allPostVars = $app->request->post();
+		$ManufacturerID=$allPostVars['ManufacturerID'];
+		$ManufacturerName=$allPostVars['ManufacturerName'];
 		$ManufacturerDescription=$allPostVars['ManufacturerDescription'];
 		$ManufacturerLogo="";
 		$ManufacturerIsActive=$allPostVars['ManufacturerIsActive'];
@@ -185,10 +190,6 @@ $app->post('/manufacturer/update/', function() use($app) {
 		if($ManufacturerLogo!=""){
 		$QueryLogo=" ManufacturerLogo=:ManufacturerLogo,";
 		}
-    try 
-    {
-        $db = getDB();
- 
         $sth = $db->prepare("UPDATE productmanufacturer 
             SET ManufacturerName = :ManufacturerName, ManufacturerCompanyID=:ManufacturerCompanyID,ManufacturerDescription = :ManufacturerDescription, ManufacturerIsActive = :ManufacturerIsActive, ManufacturerEmail=:ManufacturerEmail,".$QueryLogo." ".$QueryPassword." ManufacturerMobile=:ManufacturerMobile
             WHERE ManufacturerID = :ManufacturerID");

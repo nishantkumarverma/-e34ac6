@@ -23,7 +23,7 @@ $app->get('/productbrands/getbyid/:id', function ($id) {
         } else {
 			$app->response->setStatus(200);
 			$app->response()->headers->set('Content-Type', 'application/json');
-            echo json_encode(array("status" => "success", "code" => 1,"message"=> "No record found"));
+            echo json_encode(array("status" => "success", "code" => 0,"message"=> "No record found"));
         }
 		
     } catch(PDOException $e) {
@@ -47,7 +47,8 @@ $app->get('/productbrands/get(/)(/:pageno(/:pagelimit))', function ($pageno=0,$p
 		$StartFrom = ($pageno-1) * $pagelimit; 
 		$Query.=" LIMIT ". $pagelimit ." OFFSET ". $StartFrom."";
 		  }
- 
+		   $db = getDB();
+		$sth = $db->prepare($Query);
         $sth->execute();
  
         $Brand = $sth->fetchAll(PDO::FETCH_OBJ);
@@ -59,7 +60,7 @@ $app->get('/productbrands/get(/)(/:pageno(/:pagelimit))', function ($pageno=0,$p
         } else {
 			$app->response->setStatus(200);
 			$app->response()->headers->set('Content-Type', 'application/json');
-            echo json_encode(array("status" => "success", "code" => 1,"message"=> "No record found"));
+            echo json_encode(array("status" => "success", "code" => 0,"message"=> "No record found"));
         }
 		
     } catch(PDOException $e) {
@@ -81,9 +82,17 @@ $app->post('/productbrands/add/', function() use($app) {
         $db = getDB();
 	
 		$BrandName=$allPostVars['BrandName'];
-		$BrandLogo=$allPostVars['BrandLogo'];
+		$BrandLogo="";
 		$BrandIsActive=$allPostVars['BrandIsActive'];
 		$BrandDescription=$allPostVars['BrandDescription'];
+		
+		$output_dir = "public/brand-logo/";
+			if (!is_dir($output_dir)) {
+			mkdir($output_dir, 0777, true);       
+			}
+			
+			$imgs = array();
+		
 		$sth = $db->prepare("SELECT * 
             FROM productbrands
             WHERE BrandName = :BrandName");
@@ -97,6 +106,17 @@ $app->post('/productbrands/add/', function() use($app) {
             echo json_encode(array("status" => "success", "code" => 1,"message"=> "Brand name already exists"));
 		 }
 		 else{
+		 if(isset($_FILES['BrandLogo'])){
+			$files = $_FILES['BrandLogo'];
+		$ImageName= str_replace(' ','-',strtolower($files['name']));        
+            $ImageExt= substr($ImageName, strrpos($ImageName, '.'));
+            $ImageExt= str_replace('.','',$ImageExt);
+			$name = 'img'.mt_rand_str(3, 'TUVWXYZ256ABCDEFGH34IJKLMN789OPQR01S').date('Ymd').''.'.'.$ImageExt ;
+			$BrandLogo=$name;
+            if (move_uploaded_file($files['tmp_name'], $output_dir . $name) === true) {
+                $imgs[] = array("status" => "success", "code" => 1, 'url' => $output_dir . $name);
+            }
+		}
 		$sth = $db->prepare("INSERT INTO productbrands(BrandName,BrandLogo,BrandIsActive,BrandDescription)
             VALUES (:BrandName,:BrandLogo,:BrandIsActive,:BrandDescription)");
         $sth->bindParam(':BrandName', $BrandName);
@@ -107,7 +127,7 @@ $app->post('/productbrands/add/', function() use($app) {
 		$lastInsertId = $db->lastInsertId();
 		$app->response->setStatus(200);
 		$app->response()->headers->set('Content-Type', 'application/json');
-        echo json_encode(array("status" => "success", "code" => 1,"message"=> "Inserted Successfully!","id"=> $lastInsertId));
+        echo json_encode(array("status" => "success", "code" => 1,"message"=> "Inserted Successfully!","id"=> $lastInsertId,"image"=>$imgs));
 		}
  
    } catch(PDOException $e) {
@@ -122,22 +142,43 @@ $app->post('/productbrands/add/', function() use($app) {
 });
 $app->post('/productbrands/update/', function() use($app) {
  
-    $allPostVars = $app->request->post();
-    $BrandID=$allPostVars['BrandID'];
-	$BrandName=$allPostVars['BrandName'];
-	$BrandLogo=$allPostVars['BrandLogo'];
-	$BrandIsActive=$allPostVars['BrandIsActive'];
-	$BrandDescription=$allPostVars['BrandDescription'];	
- 
+    
     try 
     {
+		$allPostVars = $app->request->post();
+		$BrandID=$allPostVars['BrandID'];
+		$BrandName=$allPostVars['BrandName'];
+		$BrandLogo="";
+		$BrandIsActive=$allPostVars['BrandIsActive'];
+		$BrandDescription=$allPostVars['BrandDescription'];	
+		$output_dir = "public/brand-logo/";
+				if (!is_dir($output_dir)) {
+				mkdir($output_dir, 0777, true);       
+				}
         $db = getDB();
- 
+		$imgs = array();
+		if(isset($_FILES['BrandLogo'])){
+			$files = $_FILES['BrandLogo'];
+		$ImageName= str_replace(' ','-',strtolower($files['name']));        
+            $ImageExt= substr($ImageName, strrpos($ImageName, '.'));
+            $ImageExt= str_replace('.','',$ImageExt);
+			$name = 'img'.mt_rand_str(3, 'TUVWXYZ256ABCDEFGH34IJKLMN789OPQR01S').date('Ymd').''.'.'.$ImageExt ;
+			$BrandLogo=$name;
+            if (move_uploaded_file($files['tmp_name'], $output_dir . $name) === true) {
+                $imgs[] = array("status" => "success", "code" => 1, 'url' => $output_dir . $name);
+					}
+				}
+		$QueryLogo="";		
+		if($BrandLogo!=""){
+		$QueryLogo=" BrandLogo=:BrandLogo,";
+		}
         $sth = $db->prepare("UPDATE productbrands 
-            SET BrandName = :BrandName, BrandLogo=:BrandLogo,BrandIsActive=:BrandIsActive,BrandDescription=:BrandDescription
+            SET BrandName = :BrandName,".$QueryLogo."BrandIsActive=:BrandIsActive,BrandDescription=:BrandDescription
             WHERE BrandID = :BrandID");
 		$sth->bindParam(':BrandName', $BrandName);
+		if($BrandLogo!=""){
         $sth->bindParam(':BrandLogo', $BrandLogo);
+		}
 		$sth->bindParam(':BrandIsActive', $BrandIsActive);
 		$sth->bindParam(':BrandDescription', $BrandDescription);
         $sth->bindParam(':BrandID', $BrandID);
@@ -161,17 +202,20 @@ $app->post('/productbrands/update/', function() use($app) {
 
 $app->post('/productbrands/delete/', function() use($app) {
  
-    $allPostVars = $app->request->post();
-	$BrandID=$allPostVars['BrandID'];
- 
+   
     try 
     {
+	 $allPostVars = $app->request->post();
+	$BrandID=$allPostVars['BrandID'];
+	$BrandIsActive=$allPostVars['BrandIsActive'];
         $db = getDB();
  
-        $sth = $db->prepare("Delete From productbrands 
+		$sth = $db->prepare("Update productbrands Set BrandIsActive=:BrandIsActive
             WHERE BrandID = :BrandID");
+       // $sth = $db->prepare("Delete From productbrands WHERE BrandID = :BrandID");
  
         $sth->bindParam(':BrandID', $BrandID);
+		$sth->bindParam(':BrandIsActive', $BrandIsActive);
         $sth->execute();
  
         $app->response->setStatus(200);
