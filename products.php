@@ -18,17 +18,17 @@ $app->get('/products/getbyid/:id', function ($id) {
  
         if($Product) { 
             $app->response->setStatus(200);
-			$app->response()->headers->set('Content-Type', 'application/json');
+			$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
             echo json_encode(array("status" => "success", "code" => 1,"message"=> "Record found","document"=> $Product));
         } else {
 			$app->response->setStatus(200);
-			$app->response()->headers->set('Content-Type', 'application/json');
+			$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
             echo json_encode(array("status" => "success", "code" => 1,"message"=> "No record found"));
         }
 		
     } catch(PDOException $e) {
        $app->response->setStatus(500);
-		$app->response()->headers->set('Content-Type', 'application/json');
+		$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
 		echo json_encode(array("status" => "error", "code" => 0,"message"=>$e->getMessage()));
     }
 	finally {
@@ -54,17 +54,17 @@ $app->get('/products/get(/)(/:pageno(/:pagelimit))', function ($pageno=0,$pageli
  
          if($Product) { 
             $app->response->setStatus(200);
-			$app->response()->headers->set('Content-Type', 'application/json');
+			$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
             echo json_encode(array("status" => "success", "code" => 1,"message"=> "Record found","document"=> $Product));
         } else {
 			$app->response->setStatus(200);
-			$app->response()->headers->set('Content-Type', 'application/json');
+			$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
             echo json_encode(array("status" => "success", "code" => 1,"message"=> "No record found"));
         }
 		
     } catch(PDOException $e) {
        $app->response->setStatus(500);
-		$app->response()->headers->set('Content-Type', 'application/json');
+		$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
 		echo json_encode(array("status" => "error", "code" => 0,"message"=>$e->getMessage()));
     }
 	finally {
@@ -112,7 +112,7 @@ $app->post('/products/add/', function() use($app) {
        $color = $sth->fetchAll(PDO::FETCH_OBJ);
 		 if($color) {
 		  $app->response->setStatus(200);
-			$app->response()->headers->set('Content-Type', 'application/json');
+			$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
             echo json_encode(array("status" => "success", "code" => 1,"message"=> "Product title already exists"));
 		 }
 		 else{
@@ -145,13 +145,13 @@ $app->post('/products/add/', function() use($app) {
         $sth->execute();
 		$lastInsertId = $db->lastInsertId();
 		$app->response->setStatus(200);
-		$app->response()->headers->set('Content-Type', 'application/json');
+		$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
         echo json_encode(array("status" => "success", "code" => 1,"message"=> "Inserted Successfully!","id"=> $lastInsertId));
 		}
  
    } catch(PDOException $e) {
        $app->response->setStatus(500);
-		$app->response()->headers->set('Content-Type', 'application/json');
+		$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
 		echo json_encode(array("status" => "error", "code" => 0,"message"=>$e->getMessage()));
     }
 	finally {
@@ -217,12 +217,12 @@ $app->post('/products/update/', function() use($app) {
         $sth->execute();
  
       $app->response->setStatus(200);
-		$app->response()->headers->set('Content-Type', 'application/json');
+		$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
 		echo json_encode(array("status" => "success", "code" => 1,"message"=> "Updated successfully","id"=> $ProductID));
 		
     } catch(Exception $e) {
         $app->response->setStatus(500);
-		$app->response()->headers->set('Content-Type', 'application/json');
+		$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
 		echo json_encode(array("status" => "error", "code" => 0,"message"=>$e->getMessage()));
     }
 	finally {
@@ -248,12 +248,12 @@ $app->post('/products/delete/', function() use($app) {
         $sth->execute();
  
         $app->response->setStatus(200);
-		$app->response()->headers->set('Content-Type', 'application/json');
+		$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
 		echo json_encode(array("status" => "success", "code" => 1,"message"=> "Deleted successfully","id"=> $ProductID));
 		
     } catch(Exception $e) {
         $app->response->setStatus(500);
-		$app->response()->headers->set('Content-Type', 'application/json');
+		$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
 		echo json_encode(array("status" => "error", "code" => 0,"message"=>$e->getMessage()));
     }
 	finally {

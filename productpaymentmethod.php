@@ -18,17 +18,17 @@ $app->get('/product/paymentmethod/getbyid/:id', function ($id) {
  
         if($Method) { 
             $app->response->setStatus(200);
-			$app->response()->headers->set('Content-Type', 'application/json');
+			$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
             echo json_encode(array("status" => "success", "code" => 1,"message"=> "Record found","document"=> $Method));
         } else {
 			$app->response->setStatus(200);
-			$app->response()->headers->set('Content-Type', 'application/json');
+			$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
             echo json_encode(array("status" => "success", "code" => 1,"message"=> "No record found"));
         }
 		
     } catch(PDOException $e) {
        $app->response->setStatus(500);
-		$app->response()->headers->set('Content-Type', 'application/json');
+		$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
 		echo json_encode(array("status" => "error", "code" => 0,"message"=>$e->getMessage()));
     }
 	finally {
@@ -54,17 +54,17 @@ $app->get('/product/paymentmethod/get(/)(/:pageno(/:pagelimit))', function ($pag
  
          if($Method) { 
             $app->response->setStatus(200);
-			$app->response()->headers->set('Content-Type', 'application/json');
+			$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
             echo json_encode(array("status" => "success", "code" => 1,"message"=> "Record found","document"=> $Method));
         } else {
 			$app->response->setStatus(200);
-			$app->response()->headers->set('Content-Type', 'application/json');
+			$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
             echo json_encode(array("status" => "success", "code" => 1,"message"=> "No record found"));
         }
 		
     } catch(PDOException $e) {
        $app->response->setStatus(500);
-		$app->response()->headers->set('Content-Type', 'application/json');
+		$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
 		echo json_encode(array("status" => "error", "code" => 0,"message"=>$e->getMessage()));
     }
 	finally {
@@ -93,7 +93,7 @@ $PaymentMethodDescription=$allPostVars['PaymentMethodDescription'];
        $color = $sth->fetchAll(PDO::FETCH_OBJ);
 		 if($color) {
 		  $app->response->setStatus(200);
-			$app->response()->headers->set('Content-Type', 'application/json');
+			$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
             echo json_encode(array("status" => "success", "code" => 1,"message"=> "Status name already exists"));
 		 }
 		 else{
@@ -105,13 +105,13 @@ $PaymentMethodDescription=$allPostVars['PaymentMethodDescription'];
         $sth->execute();
 		$lastInsertId = $db->lastInsertId();
 		$app->response->setStatus(200);
-		$app->response()->headers->set('Content-Type', 'application/json');
+		$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
         echo json_encode(array("status" => "success", "code" => 1,"message"=> "Inserted Successfully!","id"=> $lastInsertId));
 		}
  
    } catch(PDOException $e) {
        $app->response->setStatus(500);
-		$app->response()->headers->set('Content-Type', 'application/json');
+		$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
 		echo json_encode(array("status" => "error", "code" => 0,"message"=>$e->getMessage()));
     }
 	finally {
@@ -140,12 +140,12 @@ $PaymentMethodDescription=$allPostVars['PaymentMethodDescription'];
         $sth->execute();
  
       $app->response->setStatus(200);
-		$app->response()->headers->set('Content-Type', 'application/json');
+		$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
 		echo json_encode(array("status" => "success", "code" => 1,"message"=> "Updated successfully","id"=> $PaymentMethodID));
 		
     } catch(Exception $e) {
         $app->response->setStatus(500);
-		$app->response()->headers->set('Content-Type', 'application/json');
+		$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
 		echo json_encode(array("status" => "error", "code" => 0,"message"=>$e->getMessage()));
     }
 	finally {
@@ -171,12 +171,12 @@ $app->post('/product/paymentmethod/delete/', function() use($app) {
         $sth->execute();
  
         $app->response->setStatus(200);
-		$app->response()->headers->set('Content-Type', 'application/json');
+		$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
 		echo json_encode(array("status" => "success", "code" => 1,"message"=> "Deleted successfully","id"=> $PaymentMethodID));
 		
     } catch(Exception $e) {
         $app->response->setStatus(500);
-		$app->response()->headers->set('Content-Type', 'application/json');
+		$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
 		echo json_encode(array("status" => "error", "code" => 0,"message"=>$e->getMessage()));
     }
 	finally {

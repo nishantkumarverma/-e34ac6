@@ -18,17 +18,17 @@ $app->get('/product/customfields/getbyid/:id', function ($id) {
  
         if($CustomField) { 
             $app->response->setStatus(200);
-			$app->response()->headers->set('Content-Type', 'application/json');
+			$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
             echo json_encode(array("status" => "success", "code" => 1,"message"=> "Record found","document"=> $CustomField));
         } else {
 			$app->response->setStatus(200);
-			$app->response()->headers->set('Content-Type', 'application/json');
+			$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
             echo json_encode(array("status" => "success", "code" => 1,"message"=> "No record found"));
         }
 		
     } catch(PDOException $e) {
        $app->response->setStatus(500);
-		$app->response()->headers->set('Content-Type', 'application/json');
+		$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
 		echo json_encode(array("status" => "error", "code" => 0,"message"=>$e->getMessage()));
     }
 	finally {
@@ -55,17 +55,17 @@ $app->get('/product/customfields/getbyproduct/:id', function ($id) {
  
         if($CustomField) { 
             $app->response->setStatus(200);
-			$app->response()->headers->set('Content-Type', 'application/json');
+			$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
             echo json_encode(array("status" => "success", "code" => 1,"message"=> "Record found","document"=> $CustomField));
         } else {
 			$app->response->setStatus(200);
-			$app->response()->headers->set('Content-Type', 'application/json');
+			$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
             echo json_encode(array("status" => "success", "code" => 1,"message"=> "No record found"));
         }
 		
     } catch(PDOException $e) {
        $app->response->setStatus(500);
-		$app->response()->headers->set('Content-Type', 'application/json');
+		$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
 		echo json_encode(array("status" => "error", "code" => 0,"message"=>$e->getMessage()));
     }
 	finally {
@@ -90,17 +90,17 @@ $app->get('/product/customfields/get(/)(/:pageno(/:pagelimit))', function ($page
  
          if($CustomField) { 
             $app->response->setStatus(200);
-			$app->response()->headers->set('Content-Type', 'application/json');
+			$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
             echo json_encode(array("status" => "success", "code" => 1,"message"=> "Record found","document"=> $CustomField));
         } else {
 			$app->response->setStatus(200);
-			$app->response()->headers->set('Content-Type', 'application/json');
+			$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
             echo json_encode(array("status" => "success", "code" => 1,"message"=> "No record found"));
         }
 		
     } catch(PDOException $e) {
        $app->response->setStatus(500);
-		$app->response()->headers->set('Content-Type', 'application/json');
+		$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
 		echo json_encode(array("status" => "error", "code" => 0,"message"=>$e->getMessage()));
     }
 	finally {
@@ -131,7 +131,7 @@ $CustomFieldProductID=$allPostVars['CustomFieldProductID'];
        $color = $sth->fetchAll(PDO::FETCH_OBJ);
 		 if($color) {
 		  $app->response->setStatus(200);
-			$app->response()->headers->set('Content-Type', 'application/json');
+			$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
             echo json_encode(array("status" => "success", "code" => 1,"message"=> "Custom field name already exists for this product"));
 		 }
 		 else{
@@ -144,13 +144,13 @@ $CustomFieldProductID=$allPostVars['CustomFieldProductID'];
         $sth->execute();
 		$lastInsertId = $db->lastInsertId();
 		$app->response->setStatus(200);
-		$app->response()->headers->set('Content-Type', 'application/json');
+		$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
         echo json_encode(array("status" => "success", "code" => 1,"message"=> "Inserted Successfully!","id"=> $lastInsertId));
 		}
  
    } catch(PDOException $e) {
        $app->response->setStatus(500);
-		$app->response()->headers->set('Content-Type', 'application/json');
+		$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
 		echo json_encode(array("status" => "error", "code" => 0,"message"=>$e->getMessage()));
     }
 	finally {
@@ -182,12 +182,12 @@ $CustomFieldProductID=$allPostVars['CustomFieldProductID'];
         $sth->execute();
  
       $app->response->setStatus(200);
-		$app->response()->headers->set('Content-Type', 'application/json');
+		$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
 		echo json_encode(array("status" => "success", "code" => 1,"message"=> "Updated successfully","id"=> $CustomFieldID));
 		
     } catch(Exception $e) {
         $app->response->setStatus(500);
-		$app->response()->headers->set('Content-Type', 'application/json');
+		$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
 		echo json_encode(array("status" => "error", "code" => 0,"message"=>$e->getMessage()));
     }
 	finally {
@@ -213,12 +213,12 @@ $app->post('/product/customfields/delete/', function() use($app) {
         $sth->execute();
  
         $app->response->setStatus(200);
-		$app->response()->headers->set('Content-Type', 'application/json');
+		$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
 		echo json_encode(array("status" => "success", "code" => 1,"message"=> "Deleted successfully","id"=> $CustomFieldID));
 		
     } catch(Exception $e) {
         $app->response->setStatus(500);
-		$app->response()->headers->set('Content-Type', 'application/json');
+		$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
 		echo json_encode(array("status" => "error", "code" => 0,"message"=>$e->getMessage()));
     }
 	finally {
