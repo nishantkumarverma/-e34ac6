@@ -103,8 +103,8 @@ $app->post('/manufacturer/add/', function() use($app) {
         $sth->bindParam(':ManufacturerName', $ManufacturerName);
 		$sth->bindParam(':ManufacturerCompanyID', $ManufacturerCompanyID);
 		 $sth->execute();
-       $color = $sth->fetchAll(PDO::FETCH_OBJ);
-		 if($color) {
+       $manufacturer = $sth->fetchAll(PDO::FETCH_OBJ);
+		 if($manufacturer) {
 		  $app->response->setStatus(200);
 			$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
             echo json_encode(array("status" => "success", "code" => 0,"message"=> "Manufacturer name already exists","image"=>$imgs));
