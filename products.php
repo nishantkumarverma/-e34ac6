@@ -23,7 +23,7 @@ $app->get('/products/getbyid/:id', function ($id) {
         } else {
 			$app->response->setStatus(200);
 			$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
-            echo json_encode(array("status" => "success", "code" => 1,"message"=> "No record found"));
+            echo json_encode(array("status" => "success", "code" => 0,"message"=> "No record found"));
         }
 		
     } catch(PDOException $e) {
@@ -40,14 +40,15 @@ $app->get('/products/get(/)(/:pageno(/:pagelimit))', function ($pageno=0,$pageli
  
     $app = \Slim\Slim::getInstance();
     try 
-    {
+    { 	$db = getDB();
+ 
 		$Query="SELECT * FROM products order by ProductCreatedOn DESC";
 		
 		if($pageno!=0){
 		$StartFrom = ($pageno-1) * $pagelimit; 
 		$Query.=" LIMIT ". $pagelimit ." OFFSET ". $StartFrom."";
 		  }
- 
+		$sth = $db->prepare($Query);
         $sth->execute();
  
         $Product = $sth->fetchAll(PDO::FETCH_OBJ);
@@ -59,7 +60,45 @@ $app->get('/products/get(/)(/:pageno(/:pagelimit))', function ($pageno=0,$pageli
         } else {
 			$app->response->setStatus(200);
 			$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
-            echo json_encode(array("status" => "success", "code" => 1,"message"=> "No record found"));
+            echo json_encode(array("status" => "success", "code" => 0,"message"=> "No record found"));
+        }
+		
+    } catch(PDOException $e) {
+       $app->response->setStatus(500);
+		$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
+		echo json_encode(array("status" => "error", "code" => 0,"message"=>$e->getMessage()));
+    }
+	finally {
+		 $db = null;
+	}
+
+});
+
+$app->get('/products/get/datatable(/)(/:pageno(/:pagelimit))', function ($pageno=0,$pagelimit=20) {
+ 
+    $app = \Slim\Slim::getInstance();
+    try 
+    { 	$db = getDB();
+ 
+		$Query="SELECT * FROM products order by ProductCreatedOn DESC";
+		
+		if($pageno!=0){
+		$StartFrom = ($pageno-1) * $pagelimit; 
+		$Query.=" LIMIT ". $pagelimit ." OFFSET ". $StartFrom."";
+		  }
+		$sth = $db->prepare($Query);
+        $sth->execute();
+ 
+        $Product = $sth->fetchAll(PDO::FETCH_OBJ);
+ 
+         if($Product) { 
+            $app->response->setStatus(200);
+			$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
+            echo json_encode(array("status" => "success", "code" => 1,"message"=> "Record found","document"=> $Product));
+        } else {
+			$app->response->setStatus(200);
+			$app->response()->headers('Access-Control-Allow-Origin', '*'); $app->response()->headers->set('Content-Type', 'application/json');
+            echo json_encode(array("status" => "success", "code" => 0,"message"=> "No record found"));
         }
 		
     } catch(PDOException $e) {

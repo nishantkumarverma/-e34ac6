@@ -69,12 +69,12 @@ $app->get('/shopstaffs/get(/)(/:pageno(/:pagelimit))', function ($pageno=0,$page
 });
 $app->post('/shopstaffs/validate/', function() use($app) {
  
-    $allPostVars = $app->request->post();
+   
+    try 
+    { $allPostVars = $app->request->post();
     $StaffMobile = $allPostVars['Mobile'];
     $Password = $allPostVars['Password'];
 	$Password=md5($Password);
-    try 
-    {
         $db = getDB();
  
         $sth = $db->prepare("SELECT * 
